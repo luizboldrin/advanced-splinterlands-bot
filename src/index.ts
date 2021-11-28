@@ -1,1 +1,3 @@
-console.log('Hello world')
+console.log('hello');
+
+const x = 10;
