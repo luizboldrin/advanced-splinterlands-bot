@@ -1,1 +1,1 @@
-interface IAuthData { account: string, password: string }
+export interface IAuthData { account: string, password: string }
