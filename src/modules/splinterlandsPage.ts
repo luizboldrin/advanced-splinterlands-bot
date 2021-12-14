@@ -10,14 +10,12 @@ export default class SplintelandsPage {
         this.browser = await chromium.launch({
             headless: false,
             slowMo: 100,
+            args: ['--window-position=1920,0', '--das-size=1000,1000'],
         });
         this.page = await this.browser.newPage();
     }
 
     async gotoBattlePage() {
-        if (this.page.url() === 'https://splinterlands.com/?p=battle_history') {
-            return;
-        }
         await this.page.goto('https://splinterlands.com/?p=battle_history');
     }
 
@@ -28,14 +26,44 @@ export default class SplintelandsPage {
     }
 
     async login(account: string, password: string) {
-        if (await this.isUserLogged(account)) {
-            return;
+        try {
+            await this.page.click('#log_in_button > button');
+            await this.page.fill('#email', account);
+            await this.page.fill('#password', password);
+            await this.page.focus('#password');
+            await this.page.keyboard.press('Enter');
+            await this.page.waitForNavigation();
+        } catch (e) {
+            throw new Error('Didnt login');
         }
+    }
 
-        await this.page.click('#log_in_button > button');
-        await this.page.fill('#email', account);
-        await this.page.fill('#password', password);
-        await this.page.keyboard.press('Enter');
+    async closeModal() {
+        await this.page.click('[data-dismiss=modal]');
+    }
+
+    async getEcr() {
+        // TODO
+    }
+
+    async getDec() {
+        // TODO
+    }
+
+    async getRating() {
+        // TODO
+    }
+
+    async getCards() {
+        // TODO
+    }
+
+    async isRewardCollectable() {
+        // TODO
+    }
+
+    async getQuest() {
+        // TODO
     }
 
 }

@@ -10,6 +10,18 @@ export default class User {
 
     splinterlandsPage: SplintelandsPage;
 
+    ecr: number;
+
+    dec: number;
+
+    rating: number;
+
+    cards: Array<number>;
+
+    isRewardCollectable: boolean;
+
+    quest: string;
+
     constructor({ account, password }: IAuthData) {
         this.account = account;
         this.password = password;
@@ -24,20 +36,21 @@ export default class User {
     }
 
     async login() {
-        try {
-            await this.splinterlandsPage.login(this.account, this.password);
-        } catch (e) {
-            throw new Error('Didnt login');
+        if (await this.splinterlandsPage.isUserLogged(this.account)) {
+            return;
         }
+        await this.splinterlandsPage.login(this.account, this.password);
     }
 
     async loadInfo() {
-        // getEcr
-        // getDec
-        // getRating
-        // getCards
-        // getRewardIsCollectable
-        // getQuest
+        await this.splinterlandsPage.gotoBattlePage();
+        await this.splinterlandsPage.closeModal();
+        // this.ecr = await this.splinterlandsPage.getEcr();
+        // this.dec = await this.splinterlandsPage.getDec();
+        // this.rating = await this.splinterlandsPage.getRating();
+        // this.cards = await this.splinterlandsPage.getCards();
+        // this.isRewardCollectable = await this.splinterlandsPage.isRewardCollectable();
+        // this.quest = await this.splinterlandsPage.getQuest();
     }
 
     async collectRewards() {
