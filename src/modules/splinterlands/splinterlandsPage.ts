@@ -1,6 +1,6 @@
 import { Browser, chromium, Page } from 'playwright';
 
-export default class SplintelandsPage {
+export default class SplinterlandsPage {
 
     browser: Browser;
 
@@ -43,15 +43,21 @@ export default class SplintelandsPage {
     }
 
     async getEcr() {
-        // TODO
+        const ecr = await this.page.textContent('//div[@class=\'dec-options\'][1]/div[@class=\'value\'][2]/div');
+        console.log('ecr:', ecr);
+        return parseFloat(ecr);
     }
 
     async getDec() {
-        // TODO
+        const dec = await this.page.textContent('//div[@class=\'dec-options\'][1]/div[@class=\'value\'][1]/div');
+        console.log('dec:', dec);
+        return parseFloat(dec);
     }
 
     async getRating() {
-        // TODO
+        const rating = await this.page.textContent('span.number_text');
+        console.log('rating:', rating);
+        return parseFloat(rating);
     }
 
     async getCards() {
