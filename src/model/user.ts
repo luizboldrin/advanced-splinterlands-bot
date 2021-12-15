@@ -1,4 +1,5 @@
 
+import { Quest } from 'src/@types/model/quest';
 import { IAuthData } from '../@types/model/user.d';
 import Splinterlands from '../modules/splinterlands';
 
@@ -20,7 +21,7 @@ export default class User {
 
     isRewardCollectable: boolean;
 
-    quest: string;
+    quest: Quest;
 
     constructor({ account, password }: IAuthData) {
         this.account = account;
@@ -46,10 +47,15 @@ export default class User {
         await this.splinterlands.page.gotoBattlePage();
         await this.splinterlands.page.closeModal();
         this.ecr = await this.splinterlands.page.getEcr();
+        console.log('ecr:', this.ecr);
         this.dec = await this.splinterlands.page.getDec();
+        console.log('dec:', this.dec);
         this.rating = await this.splinterlands.page.getRating();
+        console.log('rating:', this.rating);
         this.cards = await this.splinterlands.api.getPlayerCards(this.account);
-        // this.quest = await this.splinterlands.page.getQuest();
+        console.log('cards:', this.cards);
+        this.quest = await this.splinterlands.api.getPlayerQuest(this.account);
+        console.log('quest:', this.quest);
         // this.isRewardCollectable = await this.splinterlands.page.isRewardCollectable();
     }
 

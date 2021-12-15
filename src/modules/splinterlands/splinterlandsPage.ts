@@ -44,27 +44,20 @@ export default class SplinterlandsPage {
 
     async getEcr() {
         const ecr = await this.page.textContent('//div[@class=\'dec-options\'][1]/div[@class=\'value\'][2]/div');
-        console.log('ecr:', ecr);
         return parseFloat(ecr);
     }
 
     async getDec() {
         const dec = await this.page.textContent('//div[@class=\'dec-options\'][1]/div[@class=\'value\'][1]/div');
-        console.log('dec:', dec);
         return parseFloat(dec);
     }
 
     async getRating() {
         const rating = await this.page.textContent('span.number_text');
-        console.log('rating:', rating);
         return parseFloat(rating);
     }
 
     async isRewardCollectable() {
-        // TODO
-    }
-
-    async getQuest() {
         // TODO
     }
 

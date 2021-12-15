@@ -1,5 +1,8 @@
 import axios from 'axios';
+import { string } from 'joi';
+import _ from 'lodash';
 import moment from 'moment';
+import { Quest } from 'src/@types/model/quest';
 import basicCards from './basicCards';
 
 interface CardInfo {
@@ -14,7 +17,27 @@ interface CardsCollectionResponse {
     cards: CardInfo[];
 }
 
+interface QuestPlayerResponse {
+     id: string;
+     player: string;
+     name: string;
+     total_items: number;
+     completed_items: number;
+}
+
 export default class SplinterlandsApi {
+
+    quests = [
+        { name: 'Defend the Borders', element: 'life' },
+        { name: 'Pirate Attacks', element: 'water' },
+        { name: 'High Priority Targets', element: 'snipe' },
+        { name: 'Lyanna\'s Call', element: 'earth' },
+        { name: 'Stir the Volcano', element: 'fire' },
+        { name: 'Rising Dead', element: 'death' },
+        { name: 'Stubborn Mercenaries', element: 'neutral' },
+        { name: 'Gloridax Revenge', element: 'dragon' },
+        { name: 'Stealth Mission', element: 'sneak' },
+    ]
 
     async getPlayerCards(account: string) {
         const response = await axios.get<CardsCollectionResponse>(`https://api2.splinterlands.com/cards/collection/${account}`);
@@ -28,6 +51,18 @@ export default class SplinterlandsApi {
             .filter((cardInfo) => this.isValidCard(cardInfo, account))
             .map((cardInfo) => cardInfo.card_detail_id)
             .concat(basicCards);
+    }
+
+    async getPlayerQuest(account: string): Promise<Quest> {
+        const response = await axios.get<[QuestPlayerResponse]>(`https://api2.splinterlands.com/players/quests?username=${account}`);
+        const questDetails = _.first(response.data);
+
+        return {
+            name: questDetails.name,
+            element: this.quests.find((q) => q.name === questDetails.name).element,
+            total: questDetails.total_items,
+            completed: questDetails.completed_items,
+        };
     }
 
     private isValidCard(cardInfo: CardInfo, account: string) {
