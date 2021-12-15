@@ -1,9 +1,51 @@
 import axios from 'axios';
+import moment from 'moment';
+import basicCards from './basicCards';
+
+interface CardInfo {
+    'card_detail_id': number;
+    'delegated_to'?: string;
+    'market_listing_type'?: string;
+    'last_used_player'?: string;
+    'last_used_date'?: string;
+}
+interface CardsCollectionResponse {
+    player: string;
+    cards: CardInfo[];
+}
 
 export default class SplinterlandsApi {
 
     async getPlayerCards(account: string) {
-        return axios.get(`https://api2.splinterlands.com/cards/collection/${account}`);
+        const response = await axios.get<CardsCollectionResponse>(`https://api2.splinterlands.com/cards/collection/${account}`);
+        let cardsInfo: Array<CardInfo> = [];
+
+        if (response.data.cards) {
+            cardsInfo = response.data.cards;
+        }
+
+        return cardsInfo
+            .filter((cardInfo) => this.isValidCard(cardInfo, account))
+            .map((cardInfo) => cardInfo.card_detail_id)
+            .concat(basicCards);
+    }
+
+    private isValidCard(cardInfo: CardInfo, account: string) {
+        return this.isValidDelegatedTo(cardInfo, account) &&
+            this.isValidaMarketListingType(cardInfo, account) &&
+            this.isValidLastUsedPlayer(cardInfo, account);
+    }
+
+    private isValidDelegatedTo(cardInfo: CardInfo, account: string) {
+        return cardInfo.delegated_to === null || cardInfo.delegated_to === account;
+    }
+
+    private isValidaMarketListingType(cardInfo: CardInfo, account: string) {
+        return cardInfo.market_listing_type === null || cardInfo.delegated_to === account;
+    }
+
+    private isValidLastUsedPlayer(cardInfo: CardInfo, account: string) {
+        return !(cardInfo.last_used_player !== account && moment(cardInfo.last_used_date).isAfter(moment().subtract(1, 'day')));
     }
 
 }

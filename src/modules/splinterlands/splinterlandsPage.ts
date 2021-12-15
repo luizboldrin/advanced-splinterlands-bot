@@ -60,10 +60,6 @@ export default class SplinterlandsPage {
         return parseFloat(rating);
     }
 
-    async getCards() {
-        // TODO
-    }
-
     async isRewardCollectable() {
         // TODO
     }

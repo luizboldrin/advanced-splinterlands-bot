@@ -48,9 +48,9 @@ export default class User {
         this.ecr = await this.splinterlands.page.getEcr();
         this.dec = await this.splinterlands.page.getDec();
         this.rating = await this.splinterlands.page.getRating();
-        // this.cards = await this.splinterlands.page.getCards();
-        // this.isRewardCollectable = await this.splinterlands.page.isRewardCollectable();
+        this.cards = await this.splinterlands.api.getPlayerCards(this.account);
         // this.quest = await this.splinterlands.page.getQuest();
+        // this.isRewardCollectable = await this.splinterlands.page.isRewardCollectable();
     }
 
     async collectRewards() {
