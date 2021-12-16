@@ -56,23 +56,28 @@ export default class User {
         console.log('cards:', this.cards);
         this.quest = await this.splinterlands.api.getPlayerQuest(this.account);
         console.log('quest:', this.quest);
-        // this.isRewardCollectable = await this.splinterlands.page.isRewardCollectable();
     }
 
     async collectRewards() {
-        // collectQuestReward
-        // collectSeasonReward
+        await this.splinterlands.page.collectQuestReward();
+        await this.splinterlands.page.collectSeasonReward(this.account);
     }
 
     async startBattlePreparation() {
-        // clickOnBattleButton
-        // waitOpponent
+        // selectRankedMode
+        await this.splinterlands.page.clickOnBattleButton();
+        await this.splinterlands.page.waitOpponent();
     }
 
     async getBattleInfo() {
-        // getManaCap
-        // getRules
-        // getSplinters
+        const manaCap = await this.splinterlands.page.getManaCap();
+        const rules = await this.splinterlands.page.getRules();
+        const splinters = await this.splinterlands.page.getSplinters();
+        // getOpponentRecentePlayedTeams
+
+        console.log(manaCap);
+        console.log(rules);
+        console.log(splinters);
     }
 
     async getTeam() {

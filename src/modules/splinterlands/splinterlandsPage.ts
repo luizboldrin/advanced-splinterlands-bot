@@ -16,7 +16,8 @@ export default class SplinterlandsPage {
     }
 
     async gotoBattlePage() {
-        await this.page.goto('https://splinterlands.com/?p=battle_history');
+        // await this.page.goto('https://splinterlands.com/?p=battle_history');
+        await this.page.goto('file:///D:/temp/teste.html');
     }
 
     async isUserLogged(account: string) {
@@ -57,8 +58,73 @@ export default class SplinterlandsPage {
         return parseFloat(rating);
     }
 
-    async isRewardCollectable() {
-        // TODO
+    async collectQuestReward() {
+        const isQuestRewardCollectable = await this.page.isVisible('#quest_claim_btn');
+
+        if (!isQuestRewardCollectable) {
+            console.log('no quest reward to be claimed');
+            return;
+        }
+
+        console.log('claming quest reward');
+        await this.page.click('#quest_claim_btn');
     }
+
+    async collectSeasonReward(account: string) {
+        const isSeassonRewardCollectable = await this.page.isVisible('#claim-btn');
+
+        if (!isSeassonRewardCollectable) {
+            console.log('no season reward to be claimed');
+            return;
+        }
+
+        console.log((`claiming the season reward. you can check them here https://peakmonsters.com/@${account}/explorer`));
+        await this.page.click('#claim_btn');
+    }
+
+    async clickOnBattleButton() {
+        await this.page.click('#battle_category_btn');
+    }
+
+    async waitOpponent() {
+        await this.page.waitForSelector('.btn--create-team', { timeout: 25000 });
+    }
+
+    async getManaCap() {
+        const manaCapElement = await this.page.$('div.col-md-12 > div.mana-cap__icon');
+        const manaCap = await manaCapElement.getAttribute('data-original-title');
+        return parseInt(manaCap.split(':').pop(), 10);
+    }
+
+    async getRules() {
+        const rulesElements = await this.page.$$('div.combat__rules > div.row > div>  img');
+        const rules: Array<string> = [];
+
+        for (const ruleElement of rulesElements) {
+            rules.push(await ruleElement.getAttribute('data-original-title'));
+        }
+
+        return rules.map((r) => r.split(':')[0]);
+    }
+
+    async getSplinters() {
+        const splintersElements = await this.page.$$('div.col-sm-4 > img');
+        const splinters: Array<string> = [];
+
+        for (const splintersElement of splintersElements) {
+            splinters.push(await splintersElement.getAttribute('src'));
+        }
+
+        return splinters.map((s) => this.splinterIsActive(s)).filter((s) => s);
+    }
+
+    private splinterIsActive(splinterUrl: string) {
+        const splinter = splinterUrl.split('/').slice(-1)[0].replace('.svg', '').replace('icon_splinter_', '');
+        return splinter.indexOf('inactive') === -1 ? splinter : '';
+    }
+
+    //
+    //
+    // getOpponentRecentePlayedTeams
 
 }
