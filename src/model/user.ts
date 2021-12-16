@@ -1,5 +1,5 @@
 
-import { Quest } from 'src/@types/model/quest';
+import { Quest } from '../@types/model/quest.d';
 import { IAuthData } from '../@types/model/user.d';
 import Splinterlands from '../modules/splinterlands';
 
@@ -74,6 +74,7 @@ export default class User {
         const rules = await this.splinterlands.page.getRules();
         const splinters = await this.splinterlands.page.getSplinters();
         // TODO: getOpponentRecentePlayedTeams
+        // https://api2.splinterlands.com/players/recent_teams?player={{account}}
 
         console.log(manaCap);
         console.log(rules);
