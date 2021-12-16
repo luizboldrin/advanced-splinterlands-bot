@@ -16,8 +16,7 @@ export default class SplinterlandsPage {
     }
 
     async gotoBattlePage() {
-        // await this.page.goto('https://splinterlands.com/?p=battle_history');
-        await this.page.goto('file:///D:/temp/teste.html');
+        await this.page.goto('https://splinterlands.com/?p=battle_history');
     }
 
     async isUserLogged(account: string) {

@@ -15,17 +15,17 @@ import { IAuthData } from './@types/model/user.d';
     while (start) {
         for (const user of users) {
             await user.init();
-            // await user.login();
-            // await user.loadInfo();
-            // await user.collectRewards();
-            // await user.startBattlePreparation();
+            await user.login();
+            await user.loadInfo();
+            await user.collectRewards();
+            await user.startBattlePreparation();
             await user.getBattleInfo();
-            // await user.getTeam();
-            // await user.startBattle();
-            // await user.rumbleAndSkipBattle();
-            // await user.getBattleResult();
-            // await user.updateStats();
-            // await user.waitTimeToNextBattle();
+            await user.getTeam();
+            await user.startBattle();
+            await user.rumbleAndSkipBattle();
+            await user.getBattleResult();
+            await user.updateStats();
+            await user.waitTimeToNextBattle();
         }
         start = false;
     }

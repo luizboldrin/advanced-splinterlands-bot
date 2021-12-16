@@ -73,7 +73,7 @@ export default class User {
         const manaCap = await this.splinterlands.page.getManaCap();
         const rules = await this.splinterlands.page.getRules();
         const splinters = await this.splinterlands.page.getSplinters();
-        // getOpponentRecentePlayedTeams
+        // TODO: getOpponentRecentePlayedTeams
 
         console.log(manaCap);
         console.log(rules);
