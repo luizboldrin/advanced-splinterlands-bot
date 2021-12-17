@@ -1,7 +1,9 @@
 
-import { Quest } from '../@types/model/quest.d';
+import { Quest, Cards } from '../@types/modules/splinterlands.d';
 import { IAuthData } from '../@types/model/user.d';
 import Splinterlands from '../modules/splinterlands';
+import { BattleDetail } from '../@types/modules/battleEngine.d';
+import BattleEngine from '../modules/battleEngine';
 
 export default class User {
 
@@ -11,17 +13,19 @@ export default class User {
 
     splinterlands: Splinterlands;
 
+    battleEngine: BattleEngine;
+
     ecr: number;
 
     dec: number;
 
     rating: number;
 
-    cards: Array<number>;
-
-    isRewardCollectable: boolean;
+    cards: Cards;
 
     quest: Quest;
+
+    battleDetail: BattleDetail
 
     constructor({ account, password }: IAuthData) {
         this.account = account;
@@ -31,6 +35,7 @@ export default class User {
     async init() {
         if (!this.splinterlands) {
             this.splinterlands = new Splinterlands();
+            this.battleEngine = new BattleEngine();
             await this.splinterlands.init();
             await this.splinterlands.page.gotoBattlePage();
         }
@@ -76,13 +81,21 @@ export default class User {
         // TODO: getOpponentRecentePlayedTeams
         // https://api2.splinterlands.com/players/recent_teams?player={{account}}
 
-        console.log(manaCap);
-        console.log(rules);
-        console.log(splinters);
+        console.log('manaCap:', manaCap);
+        console.log('rules:', rules);
+        console.log('splinters:', splinters);
+
+        this.battleDetail = {
+            manaCap,
+            rules,
+            splinters,
+            cards: this.cards,
+            quest: this.quest,
+        };
     }
 
     async getTeam() {
-        // getPossibleTeams
+        const possibleTeams = await this.battleEngine.getPossibleTeams(this.battleDetail);
         // selectTeamFromPossibleTeams
         // selectCardsForBattle
     }

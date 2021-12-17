@@ -1,7 +1,7 @@
 import axios from 'axios';
 import _ from 'lodash';
 import moment from 'moment';
-import { Quest } from '../../@types/model/quest.d';
+import { Quest, Cards } from '../../@types/modules/splinterlands.d';
 import basicCards from './basicCards';
 
 interface CardInfo {
@@ -38,7 +38,7 @@ export default class SplinterlandsApi {
         { name: 'Stealth Mission', element: 'sneak' },
     ]
 
-    async getPlayerCards(account: string) {
+    async getPlayerCards(account: string): Promise<Cards> {
         const response = await axios.get<CardsCollectionResponse>(`https://api2.splinterlands.com/cards/collection/${account}`);
         let cardsInfo: Array<CardInfo> = [];
 
@@ -64,21 +64,21 @@ export default class SplinterlandsApi {
         };
     }
 
-    private isValidCard(cardInfo: CardInfo, account: string) {
+    private isValidCard(cardInfo: CardInfo, account: string): boolean {
         return this.isValidDelegatedTo(cardInfo, account) &&
             this.isValidaMarketListingType(cardInfo, account) &&
             this.isValidLastUsedPlayer(cardInfo, account);
     }
 
-    private isValidDelegatedTo(cardInfo: CardInfo, account: string) {
+    private isValidDelegatedTo(cardInfo: CardInfo, account: string): boolean {
         return cardInfo.delegated_to === null || cardInfo.delegated_to === account;
     }
 
-    private isValidaMarketListingType(cardInfo: CardInfo, account: string) {
+    private isValidaMarketListingType(cardInfo: CardInfo, account: string): boolean {
         return cardInfo.market_listing_type === null || cardInfo.delegated_to === account;
     }
 
-    private isValidLastUsedPlayer(cardInfo: CardInfo, account: string) {
+    private isValidLastUsedPlayer(cardInfo: CardInfo, account: string): boolean {
         return !(cardInfo.last_used_player !== account && moment(cardInfo.last_used_date).isAfter(moment().subtract(1, 'day')));
     }
 

@@ -1,4 +1,5 @@
 import { Browser, chromium, Page } from 'playwright';
+import { Splinters, ManaCap, Rules } from '../../@types/modules/splinterlands.d';
 
 export default class SplinterlandsPage {
 
@@ -38,26 +39,26 @@ export default class SplinterlandsPage {
         }
     }
 
-    async closeModal() {
+    async closeModal(): Promise<void> {
         await this.page.click('[data-dismiss=modal]');
     }
 
-    async getEcr() {
+    async getEcr(): Promise<number> {
         const ecr = await this.page.textContent('//div[@class=\'dec-options\'][1]/div[@class=\'value\'][2]/div');
         return parseFloat(ecr);
     }
 
-    async getDec() {
+    async getDec(): Promise<number> {
         const dec = await this.page.textContent('//div[@class=\'dec-options\'][1]/div[@class=\'value\'][1]/div');
         return parseFloat(dec);
     }
 
-    async getRating() {
+    async getRating(): Promise<number> {
         const rating = await this.page.textContent('span.number_text');
         return parseFloat(rating);
     }
 
-    async collectQuestReward() {
+    async collectQuestReward(): Promise<void> {
         const isQuestRewardCollectable = await this.page.isVisible('#quest_claim_btn');
 
         if (!isQuestRewardCollectable) {
@@ -69,7 +70,7 @@ export default class SplinterlandsPage {
         await this.page.click('#quest_claim_btn');
     }
 
-    async collectSeasonReward(account: string) {
+    async collectSeasonReward(account: string): Promise<void> {
         const isSeassonRewardCollectable = await this.page.isVisible('#claim-btn');
 
         if (!isSeassonRewardCollectable) {
@@ -81,21 +82,21 @@ export default class SplinterlandsPage {
         await this.page.click('#claim_btn');
     }
 
-    async clickOnBattleButton() {
+    async clickOnBattleButton(): Promise<void> {
         await this.page.click('#battle_category_btn');
     }
 
-    async waitOpponent() {
+    async waitOpponent(): Promise<void> {
         await this.page.waitForSelector('.btn--create-team', { timeout: 25000 });
     }
 
-    async getManaCap() {
+    async getManaCap(): Promise<ManaCap> {
         const manaCapElement = await this.page.$('div.col-md-12 > div.mana-cap__icon');
         const manaCap = await manaCapElement.getAttribute('data-original-title');
         return parseInt(manaCap.split(':').pop(), 10);
     }
 
-    async getRules() {
+    async getRules(): Promise<Rules> {
         const rulesElements = await this.page.$$('div.combat__rules > div.row > div>  img');
         const rules: Array<string> = [];
 
@@ -106,7 +107,7 @@ export default class SplinterlandsPage {
         return rules.map((r) => r.split(':')[0]);
     }
 
-    async getSplinters() {
+    async getSplinters(): Promise<Splinters> {
         const splintersElements = await this.page.$$('div.col-sm-4 > img');
         const splinters: Array<string> = [];
 
