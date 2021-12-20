@@ -1,6 +1,9 @@
 
-import SplintelandsPage from '../modules/splinterlandsPage';
+import { Quest, Cards } from '../@types/modules/splinterlands.d';
 import { IAuthData } from '../@types/model/user.d';
+import Splinterlands from '../modules/splinterlands';
+import { BattleDetail } from '../@types/modules/battleEngine.d';
+import BattleEngine from '../modules/battleEngine';
 
 export default class User {
 
@@ -8,7 +11,9 @@ export default class User {
 
     password: string;
 
-    splinterlandsPage: SplintelandsPage;
+    splinterlands: Splinterlands;
+
+    battleEngine: BattleEngine;
 
     ecr: number;
 
@@ -16,11 +21,11 @@ export default class User {
 
     rating: number;
 
-    cards: Array<number>;
+    cards: Cards;
 
-    isRewardCollectable: boolean;
+    quest: Quest;
 
-    quest: string;
+    battleDetail: BattleDetail
 
     constructor({ account, password }: IAuthData) {
         this.account = account;
@@ -28,49 +33,69 @@ export default class User {
     }
 
     async init() {
-        if (!this.splinterlandsPage) {
-            this.splinterlandsPage = new SplintelandsPage();
-            await this.splinterlandsPage.init();
-            await this.splinterlandsPage.gotoBattlePage();
+        if (!this.splinterlands) {
+            this.splinterlands = new Splinterlands();
+            this.battleEngine = new BattleEngine();
+            await this.splinterlands.init();
+            await this.splinterlands.page.gotoBattlePage();
         }
     }
 
     async login() {
-        if (await this.splinterlandsPage.isUserLogged(this.account)) {
+        if (await this.splinterlands.page.isUserLogged(this.account)) {
             return;
         }
-        await this.splinterlandsPage.login(this.account, this.password);
+        await this.splinterlands.page.login(this.account, this.password);
     }
 
     async loadInfo() {
-        await this.splinterlandsPage.gotoBattlePage();
-        await this.splinterlandsPage.closeModal();
-        // this.ecr = await this.splinterlandsPage.getEcr();
-        // this.dec = await this.splinterlandsPage.getDec();
-        // this.rating = await this.splinterlandsPage.getRating();
-        // this.cards = await this.splinterlandsPage.getCards();
-        // this.isRewardCollectable = await this.splinterlandsPage.isRewardCollectable();
-        // this.quest = await this.splinterlandsPage.getQuest();
+        await this.splinterlands.page.gotoBattlePage();
+        await this.splinterlands.page.closeModal();
+        this.ecr = await this.splinterlands.page.getEcr();
+        console.log('ecr:', this.ecr);
+        this.dec = await this.splinterlands.page.getDec();
+        console.log('dec:', this.dec);
+        this.rating = await this.splinterlands.page.getRating();
+        console.log('rating:', this.rating);
+        this.cards = await this.splinterlands.api.getPlayerCards(this.account);
+        console.log('cards:', this.cards);
+        this.quest = await this.splinterlands.api.getPlayerQuest(this.account);
+        console.log('quest:', this.quest);
     }
 
     async collectRewards() {
-        // collectQuestReward
-        // collectSeasonReward
+        await this.splinterlands.page.collectQuestReward();
+        await this.splinterlands.page.collectSeasonReward(this.account);
     }
 
     async startBattlePreparation() {
-        // clickOnBattleButton
-        // waitOpponent
+        // selectRankedMode
+        await this.splinterlands.page.clickOnBattleButton();
+        await this.splinterlands.page.waitOpponent();
     }
 
     async getBattleInfo() {
-        // getManaCap
-        // getRules
-        // getSplinters
+        const manaCap = await this.splinterlands.page.getManaCap();
+        const rules = await this.splinterlands.page.getRules();
+        const splinters = await this.splinterlands.page.getSplinters();
+        // TODO: getOpponentRecentePlayedTeams
+        // https://api2.splinterlands.com/players/recent_teams?player={{account}}
+
+        console.log('manaCap:', manaCap);
+        console.log('rules:', rules);
+        console.log('splinters:', splinters);
+
+        this.battleDetail = {
+            manaCap,
+            rules,
+            splinters,
+            cards: this.cards,
+            quest: this.quest,
+        };
     }
 
     async getTeam() {
-        // getPossibleTeams
+        const possibleTeams = await this.battleEngine.getPossibleTeams(this.battleDetail);
         // selectTeamFromPossibleTeams
         // selectCardsForBattle
     }
