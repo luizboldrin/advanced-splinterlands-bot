@@ -4,9 +4,10 @@ import moment from 'moment';
 import { BattleHistory } from '../../@types/modules/battleEngine.d';
 import {
     Quest, Cards, CardsCollectionResponse, CardInfoResponse,
-    QuestPlayerResponse, BattleHistoryResponse, BattleHistoryInfoResponse, BattleHistoryTeamResponse, BattleHistoryDetailResponse,
+    QuestPlayerResponse, BattleHistoryResponse, BattleHistoryInfoResponse,
+    BattleHistoryTeamResponse, BattleHistoryDetailResponse,
 } from '../../@types/modules/splinterlands.d';
-import basicCards from './basicCards';
+import CardsEnum from './cardsEnum';
 
 
 export default class SplinterlandsApi {
@@ -34,7 +35,7 @@ export default class SplinterlandsApi {
         return cardsInfo
             .filter((cardInfo) => this.isValidCard(cardInfo, account))
             .map((cardInfo) => cardInfo.card_detail_id)
-            .concat(basicCards);
+            .concat(CardsEnum.basic);
     }
 
     async getPlayerQuest(account: string): Promise<Quest> {
