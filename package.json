@@ -9,6 +9,7 @@
     "dev": "ts-node-dev --respawn --ignore-watch node_modules src/index.ts",
     "build": "babel src --extensions \".js,.ts\" --out-dir build --copy-files --no-copy-ignored",
     "start": "yarn build && node build/index.js",
+    "updateHistory": "yarn build && node build/modules/tools/updateHistoryFile.js",
     "check-types": "tsc --noemit",
     "lint": "yarn run eslint . --ext .js,.ts"
   },
