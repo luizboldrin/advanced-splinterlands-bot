@@ -1,6 +1,6 @@
 export type ManaCap = number;
 
-export type Rules = Array<string>
+export type Rules = string;
 
 export type Splinters = Array<string>
 

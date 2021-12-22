@@ -8,9 +8,10 @@ const accountsToGrab = ['schwarszchild', 'kesxel', 'patternroot', 'kenshin24', '
     const battles = [];
 
     for (const account of accountsToGrab) {
-        battles.push(await splinterlands.api.getPlayerBattleHistory(account));
+        const playerBattles = await splinterlands.api.getPlayerBattleHistory(account);
+        battles.push(...playerBattles);
     }
 
-    await fs.writeFile('data/history.json', JSON.stringify(battles));
+    await fs.writeFile('src/data/history.ts', `export default ${JSON.stringify(battles)}`);
 })()
     .catch(console.log);
